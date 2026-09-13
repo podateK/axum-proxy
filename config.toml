@@ -1,0 +1,49 @@
+[server]
+bind_addr = "0.0.0.0:8080"
+request_timeout_secs = 30
+max_connections = 1024
+
+[[backends]]
+name = "backend-1"
+url = "http://127.0.0.1:3001"
+weight = 1
+max_retries = 3
+
+[[backends]]
+name = "backend-2"
+url = "http://127.0.0.1:3002"
+weight = 2
+max_retries = 3
+
+[[backends]]
+name = "backend-3"
+url = "http://127.0.0.1:3003"
+weight = 1
+max_retries = 3
+
+[load_balancer]
+algorithm = "round_robin"
+sticky_sessions = false
+
+[health_check]
+enabled = true
+interval_secs = 10
+timeout_secs = 5
+healthy_threshold = 2
+unhealthy_threshold = 3
+
+[rate_limit]
+enabled = true
+max_requests = 1000
+window_secs = 60
+
+[proxy]
+add_x_forwarded_for = true
+add_x_real_ip = true
+add_via_header = true
+via_value = "axum-proxy"
+strip_request_headers = ["proxy-connection"]
+websocket_enabled = true
+
+[proxy.add_request_headers]
+"X-Proxy" = "axum-proxy"
